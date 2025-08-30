@@ -7,15 +7,15 @@ import prettier from 'eslint-config-prettier';
 export default [
   // Base JavaScript configuration
   js.configs.recommended,
-  
+
   // Prettier configuration to disable conflicting rules
   prettier,
-  
+
   // Global ignores
   {
-    ignores: ['**/*.md', 'dist/**', 'node_modules/**', '*.config.js', '*.config.cjs', 'server.js']
+    ignores: ['**/*.md', 'dist/**', 'node_modules/**', '*.config.js', '*.config.cjs', 'server.js'],
   },
-  
+
   // TypeScript and Solid configuration
   {
     files: ['src/**/*.ts', 'src/**/*.tsx'],
@@ -23,7 +23,7 @@ export default [
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module'
+        sourceType: 'module',
       },
       globals: {
         // Browser globals
@@ -81,37 +81,43 @@ export default [
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         setImmediate: 'readonly',
-        clearImmediate: 'readonly'
-      }
+        clearImmediate: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': typescript,
-      'solid': solid
+      solid: solid,
     },
     rules: {
       // TypeScript rules
       ...typescript.configs.recommended.rules,
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
-      '@typescript-eslint/no-unused-expressions': ['error', {
-        allowShortCircuit: true,
-        allowTernary: true
-      }],
-      
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+        },
+      ],
+
       // Solid rules
       'solid/no-innerhtml': 'off',
-      
+
       // Disable console warnings for this project
       'no-console': 'off',
-      
+
       // Disable Next.js specific rules (not needed for this project)
       '@next/next/no-img-element': 'off',
-      '@next/next/no-html-link-for-pages': 'off'
-    }
-  }
+      '@next/next/no-html-link-for-pages': 'off',
+    },
+  },
 ];

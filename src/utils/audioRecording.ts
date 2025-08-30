@@ -55,39 +55,30 @@ export function startAudioRecording(
       //Error handling structure
       switch (error.name) {
         case 'AbortError': //error from navigator.mediaDevices.getUserMedia
-           
           console.log('An AbortError has occurred.');
           break;
         case 'NotAllowedError': //error from navigator.mediaDevices.getUserMedia
-           
           console.log('A NotAllowedError has occurred. User might have denied permission.');
           break;
         case 'NotFoundError': //error from navigator.mediaDevices.getUserMedia
-           
           console.log('A NotFoundError has occurred.');
           break;
         case 'NotReadableError': //error from navigator.mediaDevices.getUserMedia
-           
           console.log('A NotReadableError has occurred.');
           break;
         case 'SecurityError': //error from navigator.mediaDevices.getUserMedia or from the MediaRecorder.start
-           
           console.log('A SecurityError has occurred.');
           break;
         case 'TypeError': //error from navigator.mediaDevices.getUserMedia
-           
           console.log('A TypeError has occurred.');
           break;
         case 'InvalidStateError': //error from the MediaRecorder.start
-           
           console.log('An InvalidStateError has occurred.');
           break;
         case 'UnknownError': //error from the MediaRecorder.start
-           
           console.log('An UnknownError has occurred.');
           break;
         default:
-           
           console.log('An error occurred with the error name ' + error.name);
       }
     });
@@ -109,11 +100,9 @@ export function stopAudioRecording(addRecordingToPreviews: null | ((blob: Blob) 
       //Error handling structure
       switch (error.name) {
         case 'InvalidStateError': //error from the MediaRecorder.stop
-           
           console.log('An InvalidStateError has occurred.');
           break;
         default:
-           
           console.log('An error occurred with the error name ' + error.name);
       }
     });

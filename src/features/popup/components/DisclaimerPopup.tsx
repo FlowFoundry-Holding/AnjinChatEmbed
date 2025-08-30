@@ -59,8 +59,7 @@ export const DisclaimerPopup = (props: DisclaimerPopupProps) => {
             class="text-gray-700 text-base mb-6"
             style={{ color: popupProps.textColor || 'black' }}
             innerHTML={
-              popupProps.message ??
-              'By using this chatbot, you agree to the <a target="_blank" href="https://anjin.ai/terms">Terms & Condition</a>.'
+              popupProps.message ?? 'By using this chatbot, you agree to the <a target="_blank" href="https://anjin.ai/terms">Terms & Condition</a>.'
             }
           />
 

@@ -20,9 +20,9 @@ const TreeViewContext = createContext<TreeViewContextType>({
   expandedItems: [],
   selectedItem: null,
   highlightedItems: [],
-   
+
   toggleItem: () => {},
-   
+
   selectItem: () => {},
   isExpanded: () => false,
   isSelected: () => false,

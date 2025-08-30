@@ -12,7 +12,7 @@ type TreeViewContextType = {
 // Create TreeView Context
 const TreeViewContext = createContext<TreeViewContextType>({
   expandedItems: [],
-   
+
   toggleItem: () => {},
   isExpanded: () => false,
 });

@@ -533,17 +533,14 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     if (botProps?.observersConfig) {
       const { observeUserInput, observeLoading, observeMessages } = botProps.observersConfig;
       typeof observeUserInput === 'function' &&
-         
         createMemo(() => {
           observeUserInput(userInput());
         });
       typeof observeLoading === 'function' &&
-         
         createMemo(() => {
           observeLoading(loading());
         });
       typeof observeMessages === 'function' &&
-         
         createMemo(() => {
           observeMessages(messages());
         });
@@ -1249,7 +1246,6 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     if (props.fontSize && botContainer) botContainer.style.fontSize = `${props.fontSize}px`;
   });
 
-   
   createEffect(async () => {
     if (props.disclaimer) {
       if (getCookie('chatbotDisclaimer') == 'true') {
@@ -1411,7 +1407,6 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
       }
     }
 
-     
     return () => {
       setUserInput('');
       setUploadedFiles([]);
