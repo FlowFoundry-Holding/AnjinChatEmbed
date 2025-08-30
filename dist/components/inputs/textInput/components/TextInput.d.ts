@@ -12,7 +12,7 @@ type TextInputProps = {
     onInputChange: (value: string) => void;
     uploadsConfig?: Partial<UploadsConfig>;
     isFullFileUpload?: boolean;
-    setPreviews: Setter<unknown[]>;
+    setPreviews: Setter<any[]>;
     onMicrophoneClicked: () => void;
     handleFileChange: (event: FileEvent<HTMLInputElement>) => void;
     maxChars?: number;

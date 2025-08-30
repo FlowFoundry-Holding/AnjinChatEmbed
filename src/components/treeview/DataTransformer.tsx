@@ -1,4 +1,4 @@
-import { createSignal, Show, For } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { WorkflowTreeView, type WorkflowNode } from './WorkflowTreeView';
 
 type DataTransformerProps = {

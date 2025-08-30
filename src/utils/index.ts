@@ -83,7 +83,7 @@ export const setLocalStorageChatflow = (chatflowid: string, chatId: string, save
     try {
       const parsedChatDetails = JSON.parse(chatDetails);
       localStorage.setItem(`${chatflowid}_EXTERNAL`, JSON.stringify({ ...parsedChatDetails, ...obj }));
-    } catch (e) {
+    } catch (_e) {
       const chatId = chatDetails;
       obj.chatId = chatId;
       localStorage.setItem(`${chatflowid}_EXTERNAL`, JSON.stringify(obj));
@@ -96,7 +96,7 @@ export const getLocalStorageChatflow = (chatflowid: string) => {
   if (!chatDetails) return {};
   try {
     return JSON.parse(chatDetails);
-  } catch (e) {
+  } catch (_e) {
     return {};
   }
 };
@@ -106,15 +106,8 @@ export const removeLocalStorageChatHistory = (chatflowid: string) => {
   if (!chatDetails) return;
   try {
     const parsedChatDetails = JSON.parse(chatDetails);
-    if (parsedChatDetails.lead) {
-      // Dont remove lead when chat is cleared
-      const obj = { lead: parsedChatDetails.lead };
-      localStorage.removeItem(`${chatflowid}_EXTERNAL`);
-      localStorage.setItem(`${chatflowid}_EXTERNAL`, JSON.stringify(obj));
-    } else {
-      localStorage.removeItem(`${chatflowid}_EXTERNAL`);
-    }
-  } catch (e) {
+    return parsedChatDetails;
+  } catch (_e) {
     return;
   }
 };

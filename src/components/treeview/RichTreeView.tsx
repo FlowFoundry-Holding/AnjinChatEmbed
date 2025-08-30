@@ -1,4 +1,4 @@
-import { createContext, useContext, JSXElement, Show, For, createEffect, mergeProps } from 'solid-js';
+import { createContext, useContext, createEffect, Show, JSXElement, mergeProps } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Dynamic } from 'solid-js/web';
 import './TreeView.css';
@@ -20,9 +20,9 @@ const TreeViewContext = createContext<TreeViewContextType>({
   expandedItems: [],
   selectedItem: null,
   highlightedItems: [],
-  // eslint-disable-next-line
+   
   toggleItem: () => {},
-  // eslint-disable-next-line
+   
   selectItem: () => {},
   isExpanded: () => false,
   isSelected: () => false,

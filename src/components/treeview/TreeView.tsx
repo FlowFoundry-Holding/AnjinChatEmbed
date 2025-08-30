@@ -1,4 +1,4 @@
-import { createSignal, createContext, useContext, JSXElement, Show, For, createEffect } from 'solid-js';
+import { createSignal, createEffect, Show, createContext, useContext, JSXElement } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { Dynamic } from 'solid-js/web';
 
@@ -12,7 +12,7 @@ type TreeViewContextType = {
 // Create TreeView Context
 const TreeViewContext = createContext<TreeViewContextType>({
   expandedItems: [],
-  // eslint-disable-next-line
+   
   toggleItem: () => {},
   isExpanded: () => false,
 });
@@ -156,7 +156,7 @@ export const RichTreeView = (props: RichTreeViewProps) => {
   };
 
   // Enhanced context with selection functionality
-  const enhancedContext = {
+  const _enhancedContext = {
     selectedItem: () => store.selectedItem,
     highlightedItems: () => store.highlightedItems,
     handleNodeSelect,

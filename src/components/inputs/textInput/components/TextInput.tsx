@@ -20,7 +20,7 @@ type TextInputProps = {
   onInputChange: (value: string) => void;
   uploadsConfig?: Partial<UploadsConfig>;
   isFullFileUpload?: boolean;
-  setPreviews: Setter<unknown[]>;
+  setPreviews: Setter<any[]>;
   onMicrophoneClicked: () => void;
   handleFileChange: (event: FileEvent<HTMLInputElement>) => void;
   maxChars?: number;
@@ -36,7 +36,7 @@ type TextInputProps = {
 const defaultBackgroundColor = '#ffffff';
 const defaultTextColor = '#303235';
 // CDN link for default send sound
-const defaultSendSound = 'https://cdn.jsdelivr.net/gh/FlowiseAI/FlowiseChatEmbed@latest/src/assets/send_message.mp3';
+const defaultSendSound = '/send_message.mp3';
 
 export const TextInput = (props: TextInputProps) => {
   const [isSendButtonDisabled, setIsSendButtonDisabled] = createSignal(false);

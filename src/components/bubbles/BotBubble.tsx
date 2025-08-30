@@ -157,7 +157,7 @@ export const BotBubble = (props: Props) => {
       if (!message) return;
       message.rating = rating;
       localStorage.setItem(`${props.chatflowid}_EXTERNAL`, JSON.stringify({ ...parsedDetails, chatHistory: messages }));
-    } catch (e) {
+    } catch (_e) {
       return;
     }
   };
@@ -165,7 +165,7 @@ export const BotBubble = (props: Props) => {
   const isValidURL = (url: string): URL | undefined => {
     try {
       return new URL(url);
-    } catch (err) {
+    } catch (_err) {
       return undefined;
     }
   };

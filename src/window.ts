@@ -1,7 +1,7 @@
 import { observersConfigType } from './components/Bot';
 import { BubbleTheme } from './features/bubble/types';
 
-/* eslint-disable solid/reactivity */
+ 
 type BotProps = {
   chatflowid: string;
   apiHost?: string;
@@ -15,15 +15,15 @@ let elementUsed: Element | undefined;
 
 export const initFull = (props: BotProps & { id?: string }) => {
   destroy();
-  const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('flowise-fullchatbot');
-  if (!fullElement) throw new Error('<flowise-fullchatbot> element not found.');
+  const fullElement = props.id ? document.getElementById(props.id) : document.querySelector('anjin-fullchatbot');
+  if (!fullElement) throw new Error('<anjin-fullchatbot> element not found.');
   Object.assign(fullElement, props);
   elementUsed = fullElement;
 };
 
 export const init = (props: BotProps) => {
   destroy();
-  const element = document.createElement('flowise-chatbot');
+  const element = document.createElement('anjin-chatbot');
   Object.assign(element, props);
   document.body.appendChild(element);
   elementUsed = element;

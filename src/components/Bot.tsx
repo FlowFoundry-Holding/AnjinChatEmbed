@@ -61,7 +61,15 @@ export type UploadsConfig = {
 
 type FilePreviewData = string | ArrayBuffer;
 
-type FilePreview = {
+type FormInput = {
+  label: string;
+  name: string;
+  type: string;
+  required?: boolean;
+  placeholder?: string;
+};
+
+type FilePreviewType = {
   data: FilePreviewData;
   mime: string;
   name: string;
@@ -96,7 +104,7 @@ export type IAction = {
   };
 };
 
-export type FileUpload = Omit<FilePreview, 'preview'>;
+export type FileUpload = Omit<FilePreviewType, 'preview'>;
 
 export type AgentFlowExecutedData = {
   nodeLabel: string;
@@ -187,7 +195,7 @@ const defaultWelcomeMessage = 'Hi there! How can I help?';
 
 /*const sourceDocuments = [
     {
-        "pageContent": "I know some are talking about "living with COVID-19". Tonight – I say that we will never just accept living with COVID-19. \r\n\r\nWe will continue to combat the virus as we do other diseases. And because this is a virus that mutates and spreads, we will stay on guard. \r\n\r\nHere are four common sense steps as we move forward safely.  \r\n\r\nFirst, stay protected with vaccines and treatments. We know how incredibly effective vaccines are. If you're vaccinated and boosted you have the highest degree of protection. \r\n\r\nWe will never give up on vaccinating more Americans. Now, I know parents with kids under 5 are eager to see a vaccine authorized for their children. \r\n\r\nThe scientists are working hard to get that done and we'll be ready with plenty of vaccines when they do. \r\n\r\nWe're also ready with anti-viral treatments. If you get COVID-19, the Pfizer pill reduces your chances of ending up in the hospital by 90%.",
+        "pageContent": "I know some are talking about "living with COVID-19". Tonight – I say that we will never just accept living with COVID-19. \r\n\r\nWe will continue to combat the virus as we do other diseases. And because this is a virus that mutates and spreads, we will stay on guard. \r\n\r\nHere are four common sense steps as we move forward safely.  \r\n\r\nFirst, stay protected with vaccines and treatments. We know how incredibly effective vaccines are. If you're vaccinated and boosted you have the highest degree of protection. \r\n\r\nWe're also ready with anti-viral treatments. If you get COVID-19, the Pfizer pill reduces your chances of ending up in the hospital by 90%.",
         "metadata": {
           "source": "blob",
           "blobType": "",
@@ -475,7 +483,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
   const [isChatFlowAvailableToStream, setIsChatFlowAvailableToStream] = createSignal(false);
   const [chatId, setChatId] = createSignal('');
-  const [isMessageStopping, setIsMessageStopping] = createSignal(false);
+  const [_isMessageStopping, setIsMessageStopping] = createSignal(false);
   const [starterPrompts, setStarterPrompts] = createSignal<string[]>([], { equals: false });
   const [chatFeedbackStatus, setChatFeedbackStatus] = createSignal<boolean>(false);
   const [fullFileUpload, setFullFileUpload] = createSignal<boolean>(false);
@@ -494,12 +502,12 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   const [startInputType, setStartInputType] = createSignal('');
   const [formTitle, setFormTitle] = createSignal('');
   const [formDescription, setFormDescription] = createSignal('');
-  const [formInputsData, setFormInputsData] = createSignal({});
+  const [_formInputsData, _setFormInputsData] = createSignal<FormInput[]>([]);
   const [formInputParams, setFormInputParams] = createSignal([]);
 
   // drag & drop file input
   // TODO: fix this type
-  const [previews, setPreviews] = createSignal<FilePreview[]>([]);
+  const [previews, setPreviews] = createSignal<FilePreviewType[]>([]);
 
   // audio recording
   const [elapsedTime, setElapsedTime] = createSignal('00:00');
@@ -525,17 +533,17 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     if (botProps?.observersConfig) {
       const { observeUserInput, observeLoading, observeMessages } = botProps.observersConfig;
       typeof observeUserInput === 'function' &&
-        // eslint-disable-next-line solid/reactivity
+         
         createMemo(() => {
           observeUserInput(userInput());
         });
       typeof observeLoading === 'function' &&
-        // eslint-disable-next-line solid/reactivity
+         
         createMemo(() => {
           observeLoading(loading());
         });
       typeof observeMessages === 'function' &&
-        // eslint-disable-next-line solid/reactivity
+         
         createMemo(() => {
           observeMessages(messages());
         });
@@ -574,7 +582,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   // Define the audioRef
   let audioRef: HTMLAudioElement | undefined;
   // CDN link for default receive sound
-  const defaultReceiveSound = 'https://cdn.jsdelivr.net/gh/FlowiseAI/FlowiseChatEmbed@latest/src/assets/receive_message.mp3';
+  const defaultReceiveSound = '/receive_message.mp3';
   const playReceiveSound = () => {
     if (props.textInput?.receiveMessageSound) {
       let audioSrc = defaultReceiveSound;
@@ -1005,7 +1013,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
     try {
       uploads = await handleFileUploads(uploads);
-    } catch (error) {
+    } catch (_error) {
       handleError('Unable to upload documents', true);
       return;
     }
@@ -1241,7 +1249,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     if (props.fontSize && botContainer) botContainer.style.fontSize = `${props.fontSize}px`;
   });
 
-  // eslint-disable-next-line solid/reactivity
+   
   createEffect(async () => {
     if (props.disclaimer) {
       if (getCookie('chatbotDisclaimer') == 'true') {
@@ -1403,7 +1411,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
       }
     }
 
-    // eslint-disable-next-line solid/reactivity
+     
     return () => {
       setUserInput('');
       setUploadedFiles([]);
@@ -1441,11 +1449,12 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     const reader = new FileReader();
     reader.readAsDataURL(blob);
     reader.onloadend = () => {
-      const base64data = reader.result as FilePreviewData;
-      const upload: FilePreview = {
-        data: base64data,
-        preview: '../assets/wave-sound.jpg',
-        type: 'audio',
+      const base64data = reader.result as string;
+      const base64 = base64data.split(',')[1];
+      const upload: FilePreviewType = {
+        data: base64,
+        preview: `data:${blob.type};base64,${base64}`,
+        type: 'file',
         name: `audio_${Date.now()}.wav`,
         mime: mimeType,
       };
@@ -1530,7 +1539,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
     const newFiles = await Promise.all(filesList);
     setUploadedFiles(uploadedFiles);
-    setPreviews((prevPreviews) => [...prevPreviews, ...(newFiles as FilePreview[])]);
+    setPreviews((prevPreviews) => [...prevPreviews, ...(newFiles as FilePreviewType[])]);
   };
 
   const isFileUploadAllowed = () => {
@@ -1607,14 +1616,14 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
 
       const newFiles = await Promise.all(files);
       setUploadedFiles(uploadedFiles);
-      setPreviews((prevPreviews) => [...prevPreviews, ...(newFiles as FilePreview[])]);
+      setPreviews((prevPreviews) => [...prevPreviews, ...(newFiles as FilePreviewType[])]);
     }
 
     if (e.dataTransfer && e.dataTransfer.items) {
       for (const item of e.dataTransfer.items) {
         if (item.kind === 'string' && item.type.match('^text/uri-list')) {
           item.getAsString((s: string) => {
-            const upload: FilePreview = {
+            const upload: FilePreviewType = {
               data: s,
               preview: s,
               type: 'url',
@@ -1630,7 +1639,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
             const start = s.substring(s.indexOf('href') + 6);
             const hrefStr = start.substring(0, start.indexOf('"'));
 
-            const upload: FilePreview = {
+            const upload: FilePreviewType = {
               data: hrefStr,
               preview: hrefStr,
               type: 'url',
@@ -1644,7 +1653,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     }
   };
 
-  const handleDeletePreview = (itemToDelete: FilePreview) => {
+  const handleDeletePreview = (itemToDelete: FilePreviewType) => {
     if (itemToDelete.type === 'file') {
       URL.revokeObjectURL(itemToDelete.preview); // Clean up for file
     }
@@ -1697,7 +1706,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
     }),
   );
 
-  const previewDisplay = (item: FilePreview) => {
+  const previewDisplay = (item: FilePreviewType) => {
     if (item.mime.startsWith('image/')) {
       return (
         <button
@@ -1815,79 +1824,77 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
               class="overflow-y-scroll flex flex-col flex-grow min-w-full w-full px-3 pt-[70px] relative scrollable-container chatbot-chat-view scroll-smooth"
             >
               <For each={[...messages()]}>
-                {(message, index) => {
-                  return (
-                    <>
-                      {message.type === 'userMessage' && (
-                        <GuestBubble
-                          message={message}
-                          apiHost={props.apiHost}
-                          chatflowid={props.chatflowid}
-                          chatId={chatId()}
-                          backgroundColor={props.userMessage?.backgroundColor}
-                          textColor={props.userMessage?.textColor}
-                          showAvatar={props.userMessage?.showAvatar}
-                          avatarSrc={props.userMessage?.avatarSrc}
-                          fontSize={props.fontSize}
-                          renderHTML={props.renderHTML}
-                        />
-                      )}
-                      {message.type === 'apiMessage' && (
-                        <BotBubble
-                          message={message}
-                          fileAnnotations={message.fileAnnotations}
-                          chatflowid={props.chatflowid}
-                          chatId={chatId()}
-                          apiHost={props.apiHost}
-                          backgroundColor={props.botMessage?.backgroundColor}
-                          textColor={props.botMessage?.textColor}
-                          feedbackColor={props.feedback?.color}
-                          showAvatar={props.botMessage?.showAvatar}
-                          avatarSrc={props.botMessage?.avatarSrc}
-                          chatFeedbackStatus={chatFeedbackStatus()}
-                          fontSize={props.fontSize}
-                          isLoading={loading() && index() === messages().length - 1}
-                          showAgentMessages={props.showAgentMessages}
-                          handleActionClick={(elem, action) => handleActionClick(elem, action)}
-                          sourceDocsTitle={props.sourceDocsTitle}
-                          handleSourceDocumentsClick={(sourceDocuments) => {
-                            setSourcePopupSrc(sourceDocuments);
-                            setSourcePopupOpen(true);
-                          }}
-                          dateTimeToggle={props.dateTimeToggle}
-                          renderHTML={props.renderHTML}
-                        />
-                      )}
-                      {message.type === 'leadCaptureMessage' && leadsConfig()?.status && !getLocalStorageChatflow(props.chatflowid)?.lead && (
-                        <LeadCaptureBubble
-                          message={message}
-                          chatflowid={props.chatflowid}
-                          chatId={chatId()}
-                          apiHost={props.apiHost}
-                          backgroundColor={props.botMessage?.backgroundColor}
-                          textColor={props.botMessage?.textColor}
-                          fontSize={props.fontSize}
-                          showAvatar={props.botMessage?.showAvatar}
-                          avatarSrc={props.botMessage?.avatarSrc}
-                          leadsConfig={leadsConfig()}
-                          sendButtonColor={props.textInput?.sendButtonColor}
-                          isLeadSaved={isLeadSaved()}
-                          setIsLeadSaved={setIsLeadSaved}
-                          setLeadEmail={setLeadEmail}
-                        />
-                      )}
-                      {message.type === 'userMessage' && loading() && index() === messages().length - 1 && <LoadingBubble />}
-                      {message.type === 'apiMessage' && message.message === '' && loading() && index() === messages().length - 1 && <LoadingBubble />}
-                    </>
-                  );
-                }}
+                {(message, _index) => (
+                  <>
+                    {message.type === 'userMessage' && (
+                      <GuestBubble
+                        message={message}
+                        apiHost={props.apiHost}
+                        chatflowid={props.chatflowid}
+                        chatId={chatId()}
+                        backgroundColor={props.userMessage?.backgroundColor}
+                        textColor={props.userMessage?.textColor}
+                        showAvatar={props.userMessage?.showAvatar}
+                        avatarSrc={props.userMessage?.avatarSrc}
+                        fontSize={props.fontSize}
+                        renderHTML={props.renderHTML}
+                      />
+                    )}
+                    {message.type === 'apiMessage' && (
+                      <BotBubble
+                        message={message}
+                        fileAnnotations={message.fileAnnotations}
+                        chatflowid={props.chatflowid}
+                        chatId={chatId()}
+                        apiHost={props.apiHost}
+                        backgroundColor={props.botMessage?.backgroundColor}
+                        textColor={props.botMessage?.textColor}
+                        feedbackColor={props.feedback?.color}
+                        showAvatar={props.botMessage?.showAvatar}
+                        avatarSrc={props.botMessage?.avatarSrc}
+                        chatFeedbackStatus={chatFeedbackStatus()}
+                        fontSize={props.fontSize}
+                        isLoading={loading() && _index() === messages().length - 1}
+                        showAgentMessages={props.showAgentMessages}
+                        handleActionClick={(elem, action) => handleActionClick(elem, action)}
+                        sourceDocsTitle={props.sourceDocsTitle}
+                        handleSourceDocumentsClick={(sourceDocuments) => {
+                          setSourcePopupSrc(sourceDocuments);
+                          setSourcePopupOpen(true);
+                        }}
+                        dateTimeToggle={props.dateTimeToggle}
+                        renderHTML={props.renderHTML}
+                      />
+                    )}
+                    {message.type === 'leadCaptureMessage' && leadsConfig()?.status && !getLocalStorageChatflow(props.chatflowid)?.lead && (
+                      <LeadCaptureBubble
+                        message={message}
+                        chatflowid={props.chatflowid}
+                        chatId={chatId()}
+                        apiHost={props.apiHost}
+                        backgroundColor={props.botMessage?.backgroundColor}
+                        textColor={props.botMessage?.textColor}
+                        fontSize={props.fontSize}
+                        showAvatar={props.botMessage?.showAvatar}
+                        avatarSrc={props.botMessage?.avatarSrc}
+                        leadsConfig={leadsConfig()}
+                        sendButtonColor={props.textInput?.sendButtonColor}
+                        isLeadSaved={isLeadSaved()}
+                        setIsLeadSaved={setIsLeadSaved}
+                        setLeadEmail={setLeadEmail}
+                      />
+                    )}
+                    {message.type === 'userMessage' && loading() && _index() === messages().length - 1 && <LoadingBubble />}
+                    {message.type === 'apiMessage' && message.message === '' && loading() && _index() === messages().length - 1 && <LoadingBubble />}
+                  </>
+                )}
               </For>
             </div>
             <Show when={messages().length === 1}>
               <Show when={starterPrompts().length > 0}>
                 <div class="w-full flex flex-row flex-wrap px-5 py-[10px] gap-2">
                   <For each={[...starterPrompts()]}>
-                    {(key) => (
+                    {(key, _index) => (
                       <StarterPromptBubble
                         prompt={key}
                         onPromptClick={() => promptClick(key)}
@@ -1907,10 +1914,10 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                   </div>
                   <div class="w-full flex flex-row flex-wrap px-5 py-[10px] gap-2">
                     <For each={[...followUpPrompts()]}>
-                      {(prompt, index) => (
+                      {(key, _index) => (
                         <FollowUpPromptBubble
-                          prompt={prompt}
-                          onPromptClick={() => followUpPromptClick(prompt)}
+                          prompt={key}
+                          onPromptClick={() => followUpPromptClick(key)}
                           starterPromptFontSize={botProps.starterPromptFontSize} // Pass it here as a number
                         />
                       )}
