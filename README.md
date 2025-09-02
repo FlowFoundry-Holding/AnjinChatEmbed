@@ -206,7 +206,7 @@ You can also customize chatbot with different configuration
           textColor: '#303235',
           text: 'Powered by',
           company: 'Anjin',
-          companyLink: 'https://anjin.ai',
+          companyLink: 'https://anjin.digital',
         },
       },
     },
